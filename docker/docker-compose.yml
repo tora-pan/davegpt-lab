@@ -4,16 +4,16 @@ services:
     container_name: davegpt-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: davegpt
-      POSTGRES_PASSWORD: davegpt
-      POSTGRES_DB: davegpt
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - davegpt-postgres-data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U davegpt"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -26,7 +26,7 @@ services:
     env_file:
       - ../apps/api/.env
     environment:
-      DATABASE_URL: postgresql://davegpt:davegpt@postgres:5432/davegpt
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PORT: 3000
     ports:
       - "3000:3000"
