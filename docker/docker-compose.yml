@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: davegpt-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: davegpt
+      POSTGRES_PASSWORD: davegpt
+      POSTGRES_DB: davegpt
+    ports:
+      - "5432:5432"
+    volumes:
+      - davegpt-postgres-data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U davegpt"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../apps/api
+    container_name: davegpt-api
+    restart: unless-stopped
+    env_file:
+      - ../apps/api/.env
+    environment:
+      DATABASE_URL: postgresql://davegpt:davegpt@postgres:5432/davegpt
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../apps/api/src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ../apps/web
+    container_name: davegpt-web
+    restart: unless-stopped
+    environment:
+      API_PROXY_TARGET: http://api:3000
+    ports:
+      - "5174:5173"
+    volumes:
+      - ../apps/web/src:/app/src
+    depends_on:
+      - api
+
+volumes:
+  davegpt-postgres-data:

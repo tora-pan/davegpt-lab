@@ -177,40 +177,40 @@ This is intended to make the system transparent during development.
 
 ## Phase 1 — Foundation
 
-- [ ] Monorepo setup
-- [ ] Frontend scaffold
-- [ ] Backend scaffold
+- [x] Monorepo setup
+- [x] Frontend scaffold
+- [x] Backend scaffold
 - [ ] Shared packages
-- [ ] Docker environment
-- [ ] Database setup
+- [x] Docker environment — `docker compose up` in `docker/` boots Postgres, the API, and the web app together
+- [x] Database setup — Postgres + pgvector, schema managed with Drizzle ORM
 
 ---
 
 ## Phase 2 — Chat Experience
 
-- [ ] Chat UI
-- [ ] Streaming responses
-- [ ] Conversation history
-- [ ] Session persistence
+- [x] Chat UI
+- [x] Streaming responses — SSE via `/api/chat/stream`
+- [x] Conversation history — prior turns are persisted and reloaded as context for multi-turn conversations
+- [ ] Session persistence — history survives server restarts, but the browser UI doesn't yet restore a conversation after a page refresh
 
 ---
 
 ## Phase 3 — AI Orchestration
 
-- [ ] Prompt pipeline
-- [ ] OpenAI integration
-- [ ] Tool registry
-- [ ] Tool execution
-- [ ] Response generation
+- [x] Prompt pipeline
+- [x] OpenAI integration
+- [x] Tool registry
+- [x] Tool execution — first tool (`getAccountBalance`) wired end-to-end, including through streaming
+- [x] Response generation
 
 ---
 
 ## Phase 4 — Memory
 
 - [ ] Conversation summaries
-- [ ] Embeddings
-- [ ] Vector search
-- [ ] Memory retrieval
+- [x] Embeddings
+- [x] Vector search — pgvector similarity search demo (`npm run embeddings:demo`)
+- [ ] Memory retrieval — the embeddings/vector search demo above is standalone; the live chat orchestrator doesn't query it yet
 - [ ] Context ranking
 
 ---
@@ -218,7 +218,7 @@ This is intended to make the system transparent during development.
 ## Phase 5 — Financial Tools
 
 - [ ] Mock transactions
-- [ ] Balance lookup
+- [x] Balance lookup — mocked `getAccountBalance` tool
 - [ ] Spending insights
 - [ ] Budget analysis
 - [ ] Cash flow prediction
